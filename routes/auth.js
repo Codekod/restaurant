@@ -16,7 +16,7 @@ router.post('/login', [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation errors',
+        message: 'Doğrulama hataları',
         errors: errors.array()
       });
     }
@@ -28,7 +28,7 @@ router.post('/login', [
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: 'Geçersiz kullanıcı bilgileri'
       });
     }
 
@@ -37,7 +37,7 @@ router.post('/login', [
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: 'Geçersiz kullanıcı bilgileri'
       });
     }
 
@@ -54,7 +54,7 @@ router.post('/login', [
 
     res.json({
       success: true,
-      message: 'Login successful',
+      message: 'Giriş başarılı',
       token,
       user: {
         id: user._id,
@@ -68,7 +68,7 @@ router.post('/login', [
     console.error('Login error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: 'Sunucu hatası'
     });
   }
 });
@@ -85,7 +85,7 @@ router.get('/me', auth, async (req, res) => {
     console.error('Get user error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: 'Sunucu hatası'
     });
   }
 });
@@ -100,7 +100,7 @@ router.put('/change-password', auth, [
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation errors',
+        message: 'Doğrulama hataları',
         errors: errors.array()
       });
     }
@@ -113,7 +113,7 @@ router.put('/change-password', auth, [
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: 'Mevcut şifre yanlış'
       });
     }
 
@@ -123,14 +123,14 @@ router.put('/change-password', auth, [
 
     res.json({
       success: true,
-      message: 'Password updated successfully'
+      message: 'Şifre başarıyla güncellendi'
     });
 
   } catch (error) {
     console.error('Change password error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: 'Sunucu hatası'
     });
   }
 });

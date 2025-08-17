@@ -49,17 +49,17 @@
                         <!-- mainmenu begin -->
                         <nav>
                             <ul id="mainmenu">
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="menu.html">menu</a></li>
-                                <li><a href="03_luxury-booking.html">Booking</a></li>
-                                <li><a href="03_luxury-about.html">About</a>
+                                <li><a href="index.html">Ana Sayfa</a></li>
+                                <li><a href="menu.html">Menü</a></li>
+                                <li><a href="03_luxury-booking.html">Rezervasyon</a></li>
+                                <li><a href="03_luxury-about.html">Hakkımızda</a>
                                     <ul>
-                                        <li><a href="03_luxury-about.html">About</a></li>
-                                        <li><a href="03_luxury-gallery.html">Gallery</a></li>
+                                        <li><a href="03_luxury-about.html">Hakkımızda</a></li>
+                                        <li><a href="03_luxury-gallery.html">Galeri</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="03_luxury-blog.html">Blog</a></li>
-                                <li><a href="03_luxury-contact.html">Contact</a></li>
+                                <li><a href="03_luxury-contact.html">İletişim</a></li>
                             </ul>
                         </nav>
                         <div class="clearfix"></div>
@@ -78,11 +78,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="text-center wow fadeInUp">
-                            <h5 class="uptitle">Make a</h5>
-                            <h2>Reservation</h2>
+                            <h5 class="uptitle">Rezervasyon</h5>
+                            <h2>Yapın</h2>
                             <ol class="breadcrumb">
-                              <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                              <li class="breadcrumb-item active" aria-current="page">Booking</li>
+                              <li class="breadcrumb-item"><a href="index.html">Ana Sayfa</a></li>
+                              <li class="breadcrumb-item active" aria-current="page">Rezervasyon</li>
                             </ol>
                         </div>
                     </div>
@@ -97,23 +97,23 @@
                 <div class="container">
 					<div class="row gx-5">
 					<div class="col-lg-4">
-                        <h3>Booking now!</h3>
-						<p>Simply select your desired date, time, and party size, and leave the rest to us. Get ready to indulge in exquisite flavors, impeccable service, and unforgettable moments as you embark on a culinary journey like no other. </p>
+                        <h3>Hemen rezervasyon yapın!</h3>
+						<p>Sadece istediğiniz tarihi, saati ve kişi sayısını seçin, gerisini bize bırakın. Eşsiz lezzetler, kusursuz hizmet ve unutulmaz anlarla dolu bir lezzet yolculuğuna çıkmaya hazır olun.</p>
 					</div>
                     <div class="col-lg-8">
-                            <form class="row" name="contactForm" id='contact_form' method="post" action="#">
+                            <form class="row" name="contactForm" id='contact_form' method="post" action="#" onsubmit="return false;">
                                 <div class="col-lg-4 mb10">
-                                    <h4>Select Date</h4>
+                                    <h4>Tarih Seçin</h4>
                                     <div id="date" class="input-group date" data-date-format="mm-dd-yyyy">
-                                        <input class="form-control" type="text" readonly />
+                                        <input class="form-control" type="date" name="date" required />
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4 mb10">
-                                    <h4>Select Time</h4>
+                                    <h4>Saat Seçin</h4>
                                     <select name="time" id="time" value="" class="form-control">
-                                        <option selected disabled>Select time</option>
+                                        <option selected disabled>Saat seçin</option>
                                         <option value="10:00">10:00</option>
                                         <option value="11:00">11:00</option>
                                         <option value="12:00">12:00</option>
@@ -131,55 +131,55 @@
                                 </div>
 
                                 <div class="col-lg-4 mb10">
-                                    <h4>How Many Guests?</h4>
+                                    <h4>Kaç Kişi?</h4>
                                     <select name="guests" id="guests" value="" class="form-control">
-                                      <option value="1-4">1 - 4</option>
-                                      <option value="5-8">5 - 10</option>
-                                      <option value="5-8">11 - 20</option>
-                                      <option value="20+">More than 20</option>
+                                      <option value="1-4">1 - 4 Kişi</option>
+                                      <option value="5-10">5 - 10 Kişi</option>
+                                      <option value="11-20">11 - 20 Kişi</option>
+                                      <option value="20+">20+ Kişi</option>
                                     </select>                                        
                                 </div>
 
                                 <div class="spacer-half"></div>
 
-                                <h4>Enter your details</h4>
+                                <h4>Bilgilerinizi girin</h4>
                                 <div class="col-md-6">
-                                    <div id='name_error' class='error'>Please enter your name.</div>
+                                    <div id='name_error' class='error'>Lütfen adınızı girin.</div>
                                     <div>
-                                        <input type='text' name='Name' id='name' class="form-control" placeholder="Your Name" required>
+                                        <input type='text' name='Name' id='name' class="form-control" placeholder="Adınız Soyadınız" required>
                                     </div>
 
-                                    <div id='email_error' class='error'>Please enter your valid E-mail ID.</div>
+                                    <div id='email_error' class='error'>Lütfen geçerli bir email adresi girin.</div>
                                     <div>
-                                        <input type='email' name='Email' id='email' class="form-control" placeholder="Your Email" required>
+                                        <input type='email' name='Email' id='email' class="form-control" placeholder="Email Adresiniz" required>
                                     </div>
 
-                                    <div id='phone_error' class='error'>Please enter your phone number.</div>
+                                    <div id='phone_error' class='error'>Lütfen telefon numaranızı girin.</div>
                                     <div>
-                                        <input type='text' name='phone' id='phone' class="form-control" placeholder="Your Phone" required>
+                                        <input type='text' name='phone' id='phone' class="form-control" placeholder="Telefon Numaranız" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div id='message_error' class='error'>Please enter your message.</div>
+                                    <div id='message_error' class='error'>Lütfen mesajınızı girin.</div>
                                     <div>
-                                        <textarea name='message' id='message' class="form-control" placeholder="Your Message"></textarea>
+                                        <textarea name='message' id='message' class="form-control" placeholder="Özel İstekleriniz (Opsiyonel)"></textarea>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="g-recaptcha" data-sitekey="6LdW03QgAAAAAJko8aINFd1eJUdHlpvT4vNKakj6"></div>
                                     <div id='submit' class="mt20">
-                                        <input type='submit' id='send_message' value='Submit Form' class="btn-line">
+                                        <input type='submit' id='send_message' value='Rezervasyon Yap' class="btn-line">
                                     </div>
                                 </div>
 
                             </form>
 
                             <div id="success_message" class='success'>
-                                Your message has been sent successfully. Refresh this page if you want to send more messages.
+                                Rezervasyonunuz başarıyla alındı. En kısa sürede size dönüş yapacağız.
                             </div>
                             <div id="error_message" class='error'>
-                                Sorry there was an error sending your form.
+                                Üzgünüz, rezervasyon gönderilirken bir hata oluştu.
                             </div>
                     </div>
 
@@ -195,13 +195,14 @@
             <div class="container">
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-4 sm-text-center">
-                        <h3>Our Location</h3>
-                        Collins Street West, Victoria 8007 Australia<br>
-                        T. (208) 333 9296<br>
-                        E. contact@baresto.com<br>
+                        <h3>Yerimiz</h3>
+                        Ankara, Çankaya, Tunalı Hilmi Caddesi, No: 12T.<br>
+                        T. (312) 454 8484<br>
+                        E. info@lunabrew.com<br>
                     </div>
                     <div class="col-lg-4 text-center">
-                        <img class="logo" src="03_images/logo.png" alt="">
+                        <img class="logo" src="03_images/logo1.png" alt="">
+                        <a href="https://www.meliheken.dev" target="_blank"> <h5 class="wow fadeInUp">meliheken.dev</h5></a>
                     </div>
                     <div class="col-lg-4 text-lg-end text-center">
                         <div class="social-icons">
@@ -234,13 +235,14 @@
 	
 	<!-- datepicker begin -->
 	<script>
-        $(function () {
-          $("#date").datepicker({ 
-                autoclose: true, 
-                todayHighlight: true
-          }).datepicker('update', new Date());
+        // Modern tarih seçici için minimum tarih ayarla
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.querySelector('input[name="date"]');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.setAttribute('min', today);
+            }
         });
-
     </script>
 	<!-- datepicker close -->
 

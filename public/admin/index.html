@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunaBrew - Admin Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/admin/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="/03_images/logo1.png" alt="LunaBrew" class="logo">
+            <h4>Admin Paneli</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#reservations" class="nav-link" data-section="reservations">
+                <i class="fas fa-calendar-check"></i>
+                <span>Rezervasyonlar</span>
+            </a>
+            <a href="#menu" class="nav-link" data-section="menu">
+                <i class="fas fa-utensils"></i>
+                <span>Menü Yönetimi</span>
+            </a>
+            <a href="#reviews" class="nav-link" data-section="reviews">
+                <i class="fas fa-star"></i>
+                <span>Yorumlar</span>
+            </a>
+            <a href="#settings" class="nav-link" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Ayarlar</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-light btn-sm" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Çıkış
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="btn btn-link sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-title">
+                <h1 id="page-title">Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <span class="user-info">Hoş geldiniz, <span id="user-name">Admin</span></span>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section active">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="today-reservations">0</h3>
+                                <p>Bugünkü Rezervasyonlar</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="pending-reservations">0</h3>
+                                <p>Bekleyen Rezervasyonlar</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-menu-items">0</h3>
+                                <p>Menü Ürünleri</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="average-rating">0.0</h3>
+                                <p>Ortalama Puan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Son Rezervasyonlar</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Müşteri</th>
+                                                <th>Tarih</th>
+                                                <th>Saat</th>
+                                                <th>Kişi</th>
+                                                <th>Durum</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recent-reservations">
+                                            <tr>
+                                                <td colspan="5" class="text-center">Yükleniyor...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Son Yorumlar</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="recent-reviews">
+                                    <p class="text-center">Yükleniyor...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservations Section -->
+            <div id="reservations-section" class="content-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Rezervasyon Yönetimi</h2>
+                    <button class="btn btn-primary" onclick="refreshReservations()">
+                        <i class="fas fa-sync-alt"></i> Yenile
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label">Durum</label>
+                                <select class="form-select" id="reservation-status-filter">
+                                    <option value="all">Tümü</option>
+                                    <option value="beklemede">Beklemede</option>
+                                    <option value="onaylandi">Onaylandı</option>
+                                    <option value="iptal">İptal</option>
+                                    <option value="tamamlandi">Tamamlandı</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tarih</label>
+                                <input type="date" class="form-control" id="reservation-date-filter">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Arama</label>
+                                <input type="text" class="form-control" id="reservation-search" placeholder="İsim, email veya telefon...">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-outline-primary w-100" onclick="filterReservations()">
+                                    <i class="fas fa-search"></i> Filtrele
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reservations Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Müşteri Bilgileri</th>
+                                        <th>Tarih & Saat</th>
+                                        <th>Kişi Sayısı</th>
+                                        <th>Durum</th>
+                                        <th>Masa</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reservations-table">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Yükleniyor...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav id="reservations-pagination"></nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Section -->
+            <div id="menu-section" class="content-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Menü Yönetimi</h2>
+                    <div>
+                        <button class="btn btn-success me-2" onclick="showAddCategoryModal()">
+                            <i class="fas fa-plus"></i> Kategori Ekle
+                        </button>
+                        <button class="btn btn-primary" onclick="showAddItemModal()">
+                            <i class="fas fa-plus"></i> Ürün Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Menu Tabs -->
+                <ul class="nav nav-tabs mb-4" id="menu-tabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#categories-tab">
+                            Kategoriler
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#items-tab">
+                            Ürünler
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- Categories Tab -->
+                    <div class="tab-pane fade show active" id="categories-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Kategori Adı</th>
+                                                <th>Açıklama</th>
+                                                <th>Sıra</th>
+                                                <th>Durum</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="categories-table">
+                                            <tr>
+                                                <td colspan="5" class="text-center">Yükleniyor...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Tab -->
+                    <div class="tab-pane fade" id="items-tab">
+                        <!-- Item Filters -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Kategori</label>
+                                        <select class="form-select" id="item-category-filter">
+                                            <option value="">Tüm Kategoriler</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Arama</label>
+                                        <input type="text" class="form-control" id="item-search" placeholder="Ürün adı veya açıklama...">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button class="btn btn-outline-primary w-100" onclick="filterMenuItems()">
+                                            <i class="fas fa-search"></i> Filtrele
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items Table -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Resim</th>
+                                                <th>Ürün Adı</th>
+                                                <th>Kategori</th>
+                                                <th>Fiyat</th>
+                                                <th>Durum</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="menu-items-table">
+                                            <tr>
+                                                <td colspan="6" class="text-center">Yükleniyor...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <nav id="menu-items-pagination"></nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div id="reviews-section" class="content-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Yorum Yönetimi</h2>
+                    <div>
+                        <button class="btn btn-success me-2" onclick="syncGoogleReviews()">
+                            <i class="fab fa-google"></i> Google Yorumları Senkronize Et
+                        </button>
+                        <button class="btn btn-primary" onclick="showAddReviewModal()">
+                            <i class="fas fa-plus"></i> Manuel Yorum Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Review Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-reviews">0</h3>
+                                <p>Toplam Yorum</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="visible-reviews">0</h3>
+                                <p>Görünür Yorumlar</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="google-reviews">0</h3>
+                                <p>Google Yorumları</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="review-average">0.0</h3>
+                                <p>Ortalama Puan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Yazar</th>
+                                        <th>Yorum</th>
+                                        <th>Puan</th>
+                                        <th>Kaynak</th>
+                                        <th>Tarih</th>
+                                        <th>Durum</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reviews-table">
+                                    <tr>
+                                        <td colspan="7" class="text-center">Yükleniyor...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav id="reviews-pagination"></nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="content-section">
+                <h2>Sistem Ayarları</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Restoran Bilgileri</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="restaurant-info-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Restoran Adı</label>
+                                        <input type="text" class="form-control" value="LunaBrew" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Adres</label>
+                                        <textarea class="form-control" rows="3" readonly>Ankara, Çankaya, Tunalı Hilmi Caddesi, No: 12T.</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Telefon</label>
+                                        <input type="text" class="form-control" value="(312) 454 8484" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="info@lunabrew.com" readonly>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Çalışma Saatleri</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <strong>Pazartesi - Perşembe:</strong> 09:00 - 23:00
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Cuma:</strong> 10:00 - 22:00
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Cumartesi - Pazar:</strong> 09:30 - 24:00
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Reservation Detail Modal -->
+    <div class="modal fade" id="reservationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rezervasyon Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reservation-form">
+                        <input type="hidden" id="reservation-id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Müşteri Adı</label>
+                                    <input type="text" class="form-control" id="customer-name" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="customer-email" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Telefon</label>
+                                    <input type="text" class="form-control" id="customer-phone" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Kişi Sayısı</label>
+                                    <input type="text" class="form-control" id="guests" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tarih</label>
+                                    <input type="text" class="form-control" id="reservation-date" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Saat</label>
+                                    <input type="text" class="form-control" id="reservation-time" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Müşteri Mesajı</label>
+                            <textarea class="form-control" id="customer-message" rows="3" readonly></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Durum</label>
+                                    <select class="form-select" id="reservation-status">
+                                        <option value="beklemede">Beklemede</option>
+                                        <option value="onaylandi">Onaylandı</option>
+                                        <option value="iptal">İptal</option>
+                                        <option value="tamamlandi">Tamamlandı</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Masa Numarası</label>
+                                    <input type="text" class="form-control" id="table-number" placeholder="Ör: A1, B3">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Admin Notları</label>
+                            <textarea class="form-control" id="admin-notes" rows="3" placeholder="İç notlar..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="updateReservation()">Güncelle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Kategori Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-category-form">
+                        <div class="mb-3">
+                            <label class="form-label">Kategori Adı *</label>
+                            <input type="text" class="form-control" id="category-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Açıklama</label>
+                            <textarea class="form-control" id="category-description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sıra</label>
+                            <input type="number" class="form-control" id="category-order" value="0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="addCategory()">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Menu Item Modal -->
+    <div class="modal fade" id="addItemModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Ürün Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-item-form" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Ürün Adı *</label>
+                                    <input type="text" class="form-control" id="item-name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Kategori *</label>
+                                    <select class="form-select" id="item-category" required>
+                                        <option value="">Kategori Seçin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Açıklama *</label>
+                            <textarea class="form-control" id="item-description" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Küçük Boy Fiyat (TL)</label>
+                                    <input type="number" class="form-control" id="price-medium" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Büyük Boy Fiyat (TL)</label>
+                                    <input type="number" class="form-control" id="price-large" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Tek Fiyat (TL)</label>
+                                    <input type="number" class="form-control" id="price-single" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ürün Resmi</label>
+                            <input type="file" class="form-control" id="item-image" accept="image/*">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Hazırlık Süresi (dakika)</label>
+                                    <input type="number" class="form-control" id="preparation-time" value="15">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Sıra</label>
+                                    <input type="number" class="form-control" id="item-order" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is-popular">
+                                    <label class="form-check-label" for="is-popular">Popüler</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is-vegetarian">
+                                    <label class="form-check-label" for="is-vegetarian">Vejetaryen</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is-vegan">
+                                    <label class="form-check-label" for="is-vegan">Vegan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is-gluten-free">
+                                    <label class="form-check-label" for="is-gluten-free">Glutensiz</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="addMenuItem()">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Review Modal -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Manuel Yorum Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-review-form">
+                        <div class="mb-3">
+                            <label class="form-label">Yazar Adı *</label>
+                            <input type="text" class="form-control" id="review-author" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Yorum Metni *</label>
+                            <textarea class="form-control" id="review-text" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Puan *</label>
+                            <select class="form-select" id="review-rating" required>
+                                <option value="">Puan Seçin</option>
+                                <option value="5">5 Yıldız</option>
+                                <option value="4">4 Yıldız</option>
+                                <option value="3">3 Yıldız</option>
+                                <option value="2">2 Yıldız</option>
+                                <option value="1">1 Yıldız</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="addReview()">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Yükleniyor...</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/admin/js/admin.js"></script>
+</body>
+</html>
