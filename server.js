@@ -41,7 +41,8 @@ const connectDB = async () => {
   } catch (err) {
     console.error('MongoDB bağlantı hatası:', err.message);
     console.log('MongoDB sunucusunun çalıştığından emin olun veya .env dosyasında MONGODB_URI ayarlayın');
-    process.exit(1);
+    // MongoDB bağlantısı olmadan da static dosyalar serve edilebilir
+    console.log('MongoDB olmadan devam ediliyor...');
   }
 };
 
@@ -54,14 +55,48 @@ app.use('/api/reservations', require('./routes/reservations'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/admin', require('./routes/admin'));
 
-// Serve admin panel
-app.get('/admin*', (req, res) => {
+// Admin panel route
+app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/admin/index.html'));
 });
 
-// Serve main website
-app.get('*', (req, res) => {
+app.get('/admin/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/admin/login.html'));
+});
+
+// Ana sayfa route
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Diğer HTML sayfaları
+app.get('/menu.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'menu.html'));
+});
+
+app.get('/03_luxury-booking.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '03_luxury-booking.html'));
+});
+
+app.get('/03_luxury-about.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '03_luxury-about.html'));
+});
+
+app.get('/03_luxury-gallery.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '03_luxury-gallery.html'));
+});
+
+app.get('/03_luxury-blog.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '03_luxury-blog.html'));
+});
+
+app.get('/03_luxury-contact.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '03_luxury-contact.html'));
+});
+
+// 404 handler - en sonda olmalı
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Error handling middleware
