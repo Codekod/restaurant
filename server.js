@@ -31,7 +31,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/lunabrew';
-    console.log('MongoDB bağlantısı deneniyor:', mongoUri);
+    console.log('MongoDB bağlantısı deneniyor...');
     
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000,
@@ -39,14 +39,17 @@ const connectDB = async () => {
     });
     console.log('MongoDB bağlantısı başarılı');
   } catch (err) {
-    console.error('MongoDB bağlantı hatası:', err.message);
-    console.log('MongoDB sunucusunun çalıştığından emin olun veya .env dosyasında MONGODB_URI ayarlayın');
+    console.warn('MongoDB bağlantı hatası:', err.message);
+    console.warn('MongoDB sunucusunun çalıştığından emin olun veya .env dosyasında MONGODB_URI ayarlayın');
     // MongoDB bağlantısı olmadan da static dosyalar serve edilebilir
-    console.log('MongoDB olmadan devam ediliyor...');
+    console.log('✓ MongoDB olmadan devam ediliyor - Static dosyalar serve edilecek');
   }
 };
 
-connectDB();
+// MongoDB bağlantısını async olarak başlat ama server'ı bloke etme
+connectDB().catch(() => {
+  console.log('✓ Server MongoDB olmadan başlatıldı');
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
