@@ -9,7 +9,9 @@ require('dotenv').config();
 const app = express();
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false // Static dosyalar için gerekli
+}));
 app.use(cors());
 
 // Rate limiting
@@ -23,9 +25,8 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static files
+// Static files - root dizindeki tüm dosyaları serve et
 app.use(express.static(__dirname));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
 const connectDB = async () => {
@@ -37,42 +38,33 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
-    console.log('MongoDB bağlantısı başarılı');
+    console.log('✅ MongoDB bağlantısı başarılı');
   } catch (err) {
-    console.warn('MongoDB bağlantı hatası:', err.message);
-    console.warn('MongoDB sunucusunun çalıştığından emin olun veya .env dosyasında MONGODB_URI ayarlayın');
-    // MongoDB bağlantısı olmadan da static dosyalar serve edilebilir
-    console.log('✓ MongoDB olmadan devam ediliyor - Static dosyalar serve edilecek');
+    console.warn('⚠️ MongoDB bağlantı hatası:', err.message);
+    console.warn('⚠️ MongoDB olmadan devam ediliyor - Static dosyalar serve edilecek');
   }
 };
 
-// MongoDB bağlantısını async olarak başlat ama server'ı bloke etme
-connectDB().catch(() => {
-  console.log('✓ Server MongoDB olmadan başlatıldı');
-});
+// MongoDB bağlantısını async olarak başlat
+connectDB();
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/menu', require('./routes/menu'));
-app.use('/api/reservations', require('./routes/reservations'));
-app.use('/api/reviews', require('./routes/reviews'));
-app.use('/api/admin', require('./routes/admin'));
+// API Routes - static dosyalardan önce tanımla
+try {
+  app.use('/api/auth', require('./routes/auth'));
+  app.use('/api/menu', require('./routes/menu'));
+  app.use('/api/reservations', require('./routes/reservations'));
+  app.use('/api/reviews', require('./routes/reviews'));
+  app.use('/api/admin', require('./routes/admin'));
+  console.log('✅ API routes yüklendi');
+} catch (error) {
+  console.warn('⚠️ API routes yüklenemedi (MongoDB gerekli):', error.message);
+}
 
-// Admin panel route
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/admin/index.html'));
-});
-
-app.get('/admin/login.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/admin/login.html'));
-});
-
-// Ana sayfa route
+// HTML Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Diğer HTML sayfaları
 app.get('/menu.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'menu.html'));
 });
@@ -97,14 +89,18 @@ app.get('/03_luxury-contact.html', (req, res) => {
   res.sendFile(path.join(__dirname, '03_luxury-contact.html'));
 });
 
-// 404 handler - en sonda olmalı
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'index.html'));
+// Admin panel routes
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/admin/index.html'));
+});
+
+app.get('/admin/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/admin/login.html'));
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Server error:', err.stack);
   res.status(500).json({ 
     success: false, 
     message: 'Something went wrong!',
@@ -114,6 +110,8 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Admin panel: http://localhost:${PORT}/admin`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 Admin panel: http://localhost:${PORT}/admin`);
+  console.log(`🌐 Website: http://localhost:${PORT}`);
+  console.log('✅ Static dosyalar serve ediliyor');
 });
