@@ -9,7 +9,13 @@ const MenuItem = require('../models/MenuItem');
 async function seedData() {
   try {
     // MongoDB'ye bağlan
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/lunabrew');
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/lunabrew';
+    console.log('MongoDB bağlantısı deneniyor:', mongoUri);
+    
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 5000, // 5 saniye timeout
+      socketTimeoutMS: 45000,
+    });
     console.log('MongoDB bağlantısı başarılı');
 
     // Mevcut verileri temizle
